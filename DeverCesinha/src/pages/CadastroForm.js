@@ -5,7 +5,7 @@ export default props => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [response, setReponse] = useState(null)
+  const [response, setReponse] = useState(undefined)
   const data = {
     name,
     email,
@@ -13,15 +13,9 @@ export default props => {
   }
 
   function handleCadastro() {
-    axios.post('http://192.168.0.104:3000/dados', data)
-    .then(data => setReponse(data.data)) 
+    axios.post('http://10.73.115.252:3000/dados', data)
+    .then(data => setReponse(data.data.message)) 
   }
-  const messageForUser = JSON.stringify(response)
-  .slice(12)
-  .replace(':', ' ')
-  .replace('{', ' ')
-  .replace('}', ' ')
-  .replace('"', ' ')
   return (
     <View style={styles.container}>
       <TextInput
@@ -45,7 +39,7 @@ export default props => {
         secureTextEntry
       />
       <Button title="Cadastrar" onPress={handleCadastro} />
-      <Text>{messageForUser}</Text>
+      <Text>{response}</Text>
     </View>
   );
 };
