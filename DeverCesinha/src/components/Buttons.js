@@ -8,7 +8,7 @@ export default props => {
             <TouchableHighlight onPress={() => navigation.navigate('Cadastro')} style={styles.Btn}>
                 <Text>Cadastrar</Text>
             </TouchableHighlight>
-            <TouchableHighlight style={styles.Btn}>
+            <TouchableHighlight onPress={() => navigation.navigate('MostrarDados')} style={styles.Btn}>
                 <Text>Login</Text>
             </TouchableHighlight>
         </View>

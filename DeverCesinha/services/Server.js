@@ -1,57 +1,70 @@
 const express = require('express')
+const mongoose = require('mongoose')
+
 const app = express()
-const fs = require('fs')
-const path = require('path')
 const PORT = 3000
-const Path = path.join(`${__dirname}`)
-
-
 
 app.use(express.json())
 
+mongoose.connect('mongodb://127.0.0.1/crud')
+    .then(() => console.log('mongoose conectado...'))
+    .catch(err => console.log(' Error ' + err))
+
+const UserSchema = mongoose.Schema({
+    name: {
+        type: String,
+        require: true
+    },
+    email: {
+        type: String,
+        require: true
+    },
+    password: {
+        type: String,
+        require: true
+    }
+})
+
+mongoose.model('users', UserSchema)
+
+const User = new mongoose.model('users')
 
 app.post('/dados', (req, res) => {
-    const dados = JSON.stringify(req.body)
-    fs.writeFile(`${Path}/${req.body.name}.json`, dados, (err) => {
-        res.send({message: "Dados criados" })
+    const name = req.body.name
+    const email = req.body.email
+    const password = req.body.password
+    User.create({
+        name,
+        email,
+        password,
     })
+    res.send({ message: 'dados criados!' })
 })
 
-app.get('/dados/:name', (req, res) => {
-    const existe = fs.existsSync(req.params.name + '.json')
-    if (existe) {
-        fs.readFile(`${Path}/${req.params.name}.json`, (err, data) => {
-            const dados = JSON.parse(data)
-            res.send({ message: "Aqui seus dados:", dados })
-        })
-    }
-    else {
-        res.send({ message: "Essa conta não existe!" })
-    }
+app.get('/dados/:name', async (req, res) => {
+    const showData = await User.findOne({ name: req.params.name })
+
+    if (!showData) return res.send({ message: 'Usuário Inválido!' });
+    const dados = [showData.name, showData.email, showData.password]
+    const dadosFinais = dados.map(e => {
+        return e + '\n'
+    })
+
+    return res.send({ message: dadosFinais })
 
 })
 
-app.put('/dados/:name', (req, res) => {
-    const data = JSON.stringify(req.body)
-    const existe = fs.existsSync(req.params.name + '.json')
-    if (existe) {
-        fs.writeFileSync(`${__dirname}/${req.params.name}.json`, data, { flag: 'w' })
-        res.send({ message: "Dados atualizados!" })
-    }
-    else {
-        res.send({ message: 'Essa Conta não Existe!' })
-    }
+app.put('/dados/:name', async (req, res) => {
+    const put = await User.findOneAndUpdate({ name: req.params.name }, req.body)
+    if (!put) return res.send({ message: 'Usuário Inválido!' })
+    res.send({ message: 'Usuário atualizado com sucesso!' })
+
 })
 
-app.delete('/dados/:name', (req, res) => {
-    const existe = fs.existsSync(req.params.name + '.json')
-    if (existe) {
-        fs.unlinkSync(`${Path}/${req.params.name}.json`)
-        res.send({ message: "dado deletado!" })
-    }
-    else {
-        res.send({ message: "Essa Conta não Existe!" })
-    }
+app.delete('/dados/:name', async (req, res) => {
+    const delet = await User.deleteMany({ name: req.params.name })
+    if (!delet) return res.send({ message: 'Usuário Inválido!' })
+    res.send({ message: 'Usuário deletado com Sucesso!' })
 })
 
 app.use((req, res) => {

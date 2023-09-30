@@ -5,7 +5,7 @@ export default props => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [response, setReponse] = useState(undefined)
+  const [response, setReponse] = useState(null)
   const data = {
     name,
     email,
@@ -13,8 +13,8 @@ export default props => {
   }
 
   function handleCadastro() {
-    axios.post('http://10.73.115.252:3000/dados', data)
-    .then(data => setReponse(data.data.message)) 
+    axios.post('http://192.168.0.103:3000/dados', data)
+    .then(data => setReponse(JSON.parse(data.data.message))) 
   }
   return (
     <View style={styles.container}>
