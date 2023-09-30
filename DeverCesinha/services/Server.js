@@ -41,17 +41,17 @@ app.post('/dados', (req, res) => {
     res.send({ message: 'dados criados!' })
 })
 
-app.get('/dados/:name', async (req, res) => {
-    const showData = await User.findOne({ name: req.params.name })
-
+app.get('/dados/:name/:password', async (req, res) => {
+    const showData = await User.findOne({ name: req.params.name, password: req.params.password })
+    console.log(req.params.name, req.params.password);
     if (!showData) return res.send({ message: 'Usuário Inválido!' });
-    const dados = [showData.name, showData.email, showData.password]
-    const dadosFinais = dados.map(e => {
+    const finalResultArray = [showData.name, showData.email, showData.password]
+    const finalResult = finalResultArray.map((e) => {
         return e + '\n'
     })
-
-    return res.send({ message: dadosFinais })
-
+    
+    return res.send({ message: finalResult })
+    
 })
 
 app.put('/dados/:name', async (req, res) => {

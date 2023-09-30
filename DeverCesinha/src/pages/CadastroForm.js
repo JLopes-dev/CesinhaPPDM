@@ -13,8 +13,8 @@ export default props => {
   }
 
   function handleCadastro() {
-    axios.post('http://192.168.0.103:3000/dados', data)
-    .then(data => setReponse(JSON.parse(data.data.message))) 
+    axios.post('http://192.168.0.102:3000/dados', data)
+    .then(data => setReponse(data.data.message)) 
   }
   return (
     <View style={styles.container}>
