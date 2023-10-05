@@ -6,7 +6,7 @@ const PORT = 3000
 
 app.use(express.json())
 
-mongoose.connect('mongodb://127.0.0.1/crud')
+mongoose.connect('mongodb://127.0.0.1/PPDM')
     .then(() => console.log('mongoose conectado...'))
     .catch(err => console.log(' Error ' + err))
 
